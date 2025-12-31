@@ -44,7 +44,15 @@ int main()
         }
 
         char buffer[4096];
-        int recieved = recv(client_fd,buffer,sizeof(buffer) - 1, 0);
+        int recieved;
+        int total = 0;
+
+        while ((recieved = recv(client_fd, buffer + total,sizeof(buffer) - total - 1,0)) > 0)
+        {
+            total += recieved;
+            buffer[total] = '\0';
+            if (strstr(buffer, "\r\n\r\n")) break;
+        }
 
         if (recieved > 0)
         {
