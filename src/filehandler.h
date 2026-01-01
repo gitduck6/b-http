@@ -8,6 +8,7 @@ typedef struct
 {
     char * content;
     size_t size;
+    size_t len;
 }
 string;
 

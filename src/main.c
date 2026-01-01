@@ -75,9 +75,13 @@ int main(void)
         }
 
         string body = loadFile("www/index.html");
-        char response[512];
+        string response;
+        response.len = sizeOfFile("www/index.html");
+        response.size = 256 + response.len;
+        response.content = malloc(response.size);
+        // OMG IM SO STUPID
 
-        snprintf(response, sizeof(response),
+        snprintf(response.content,  response.size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
         "Content-Length: %zu\r\n"
@@ -87,7 +91,7 @@ int main(void)
         body.content        
         );
 
-        send(client_fd, response, strlen(response), 0);
+        send(client_fd, response.content, strlen(response.content), 0);
         close(client_fd);
     }
 
