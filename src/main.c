@@ -8,6 +8,7 @@
 #include "filehandler.h"
 
 #define METHOD_GET "GET"
+#define FILES_DIR "www/"
 
 /*\
     * This is a simple C http server that im trying to improve in order to learn
@@ -78,19 +79,23 @@ int main(void)
             printf("Request:\n%s\n",buffer.content);
         }
 
-        char path[512] = {0};
+        // OKAY even if this works and im happy, this is extremely dangerous,
+        // a hacker could potentially read ANY file in the system
+        char path[512] = FILES_DIR;
         if (strstr(buffer.content,METHOD_GET) == buffer.content)
         {
             char * startOfPath = buffer.content + sizeof(METHOD_GET);
-            for (int i = 0;(startOfPath[i] != ' ') && ((i + 1) < sizeof(path));i++)
+            for (int i = 0;(startOfPath[i] != ' ') && ((i + 1) < (sizeof(path) - sizeof(FILES_DIR)));i++)
             {
-                path[i] = startOfPath[i];
+                path[i + sizeof(FILES_DIR) -1 ] = startOfPath[i];
             }
         }
 
-        string body = loadFile("www/index.html");
+
+
+        string body = loadFile(path);
         string response;
-        response.len = sizeOfFile("www/index.html");
+        response.len = sizeOfFile(path);
         response.size = 256 + response.len;
         response.content = malloc(response.size);
         // OMG IM SO STUPID
