@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include "filehandler.h"
+
 /*\
     * This is a simple C http server that im trying to improve in order to learn
     * right now all it does is
@@ -72,7 +74,7 @@ int main(void)
             printf("Request:\n%s\n",buffer);
         }
 
-        const char *body = "<h1>Hello World!</h1>";
+        string body = loadFile("www/index.html");
         char response[512];
 
         snprintf(response, sizeof(response),
@@ -81,8 +83,8 @@ int main(void)
         "Content-Length: %zu\r\n"
         "\r\n"
         "%s",
-        strlen(body),
-        body        
+        strlen(body.content),
+        body.content        
         );
 
         send(client_fd, response, strlen(response), 0);
