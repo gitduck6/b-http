@@ -2,9 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+/*\
+    * This is a simple C http server that im trying to improve in order to learn
+    * right now all it does is
+    * Create a socket, Bind that socket to a port, listen in that port, and respond to clients
+    * 
+    * rightnow it needs many improvements, 
+    * such as responding from a file,
+    * handling multiple clients at once,
+    * giving the file requested by the client (images, css, js included)
+    * 
+    * 
+\*/
 
 int main()
 {
