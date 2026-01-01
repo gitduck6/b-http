@@ -7,6 +7,8 @@
 
 #include "filehandler.h"
 
+#define METHOD_GET "GET"
+
 /*\
     * This is a simple C http server that im trying to improve in order to learn
     * right now all it does is
@@ -73,8 +75,17 @@ int main(void)
 
         if (recieved > 0)
         {
-            buffer.content[recieved] = '\0';
             printf("Request:\n%s\n",buffer.content);
+        }
+
+        char path[512] = {0};
+        if (strstr(buffer.content,METHOD_GET) == buffer.content)
+        {
+            char * startOfPath = buffer.content + sizeof(METHOD_GET);
+            for (int i = 0;(startOfPath[i] != ' ') && ((i + 1) < sizeof(path));i++)
+            {
+                path[i] = startOfPath[i];
+            }
         }
 
         string body = loadFile("www/index.html");
@@ -83,6 +94,8 @@ int main(void)
         response.size = 256 + response.len;
         response.content = malloc(response.size);
         // OMG IM SO STUPID
+
+        printf("PATH IS %s\n",path);
 
         snprintf(response.content,  response.size,
         "HTTP/1.1 200 OK\r\n"
