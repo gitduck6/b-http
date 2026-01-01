@@ -57,21 +57,24 @@ int main(void)
             continue;
         }
 
-        char buffer[4096];
+        string buffer;
+        buffer.size = 4096;
+        buffer.content = malloc(buffer.size);
         int recieved;
         int total = 0;
 
-        while ((recieved = recv(client_fd, buffer + total,sizeof(buffer) - total - 1,0)) > 0)
+        while ((recieved = recv(client_fd, buffer.content + total,buffer.size - total - 1,0)) > 0)
         {
             total += recieved;
-            buffer[total] = '\0';
-            if (strstr(buffer, "\r\n\r\n")) break;
+            buffer.content[total] = '\0';
+            buffer.len = total;
+            if (strstr(buffer.content, "\r\n\r\n")) break;
         }
 
         if (recieved > 0)
         {
-            buffer[recieved] = '\0';
-            printf("Request:\n%s\n",buffer);
+            buffer.content[recieved] = '\0';
+            printf("Request:\n%s\n",buffer.content);
         }
 
         string body = loadFile("www/index.html");
@@ -92,6 +95,9 @@ int main(void)
         );
 
         send(client_fd, response.content, strlen(response.content), 0);
+        free(response.content);
+        free(buffer.content);
+        free(body.content);
         close(client_fd);
     }
 
