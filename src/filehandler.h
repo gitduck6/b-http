@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct
+{
+    char * content;
+    size_t size;
+}
+string;
+
 ssize_t sizeOfFile(char * filename);
 
-int fileToBufferN(char * file_name, char * buffer, size_t n);
+string loadFile(char * filename);

@@ -18,39 +18,45 @@ ssize_t sizeOfFile(char * filename)
 
     fclose(fp);
     return size;
-
 }
 
-int fileToBufferN(char * file_name, char * buffer, size_t buffer_size)
+// a function that loads a file into memory, as a string type
+string loadFile(char * filename)
 {
-    FILE * fp = fopen(file_name,"rb");
+    FILE * fp = fopen(filename,"rb");
     if (!fp)
     {
-        perror("fopen failed\n");
-        return -1;
+        fprintf(stderr,"Error reading from file %s",filename);
+        return (string){0};
     }
-    int c;
-    size_t i;
-    for (i = 0;(i < buffer_size);i++)
-    {
-        if ((c = fgetc(fp)) != EOF)
-        {
-            buffer[i] = (char)c;
-        }
-        else 
-        {
-            buffer[i] = '\0';
-            return i;
-        }
-    }
-    buffer[i] = '\0';
-    return buffer_size;
-}
+    string data = {0};
+    size_t size = 32;
 
-int main(void)
-{
-    char buffer[5000];
-    fileToBufferN("main.c",buffer,sizeof(buffer));
-    printf("%s",buffer);
-    return 0;
+    data.content = malloc(size);
+    if (!data.content)
+    {
+        fprintf(stderr,"Memory allocation failure\n");
+        return (string){0};
+    }
+    
+    char c;
+    char * temp;
+    for (int i = 0;(c = fgetc(fp)) != EOF;i++)
+    {
+        data.content[i] = c;
+        data.size++;
+        if ((data.size + 1) >= size)
+        {
+            size *= 2;
+            temp = realloc(data.content,size);
+            if (temp == NULL)
+            {
+                fprintf(stderr,"Memory allocation failure\n");
+                return (string){0};
+            }
+            data.content = temp;
+        }
+    }
+    fclose(fp);
+    return data;
 }
