@@ -60,22 +60,15 @@ int main(void)
         }
 
         char user_req[4096];
-        int recieved;
-        int total = 0;
+        size_t total = 0;
+        size_t received;
 
-        while ((recieved = recv(client_fd, user_req + total, sizeof(user_req) - total - 1, 0)) > 0)
+        while ((received = recv(client_fd,user_req + total,sizeof(user_req) - total - 1,0)) > 0)
         {
-            total += recieved;
-            if (total >= (sizeof(user_req) - 1)) break;
+            total += received;
+            user_req[total] = '\0';
+            if (strstr(user_req,"\r\n\r\n")) break;
         }
-        if (recieved < 0)
-        {
-            perror("Recv failed");
-            close(client_fd);
-            continue;
-        }
-
-        user_req[total] = '\0';
 
         char * server_content = "Welcome home\n";
         char server_response[512];
