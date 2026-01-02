@@ -98,7 +98,7 @@ int main(void)
         response.len = sizeOfFile(path);
 
         // ERNNO's to http response codes
-        if ()
+        if (res)
 
         response.size = 256 + response.len;
         response.content = malloc(response.size);
