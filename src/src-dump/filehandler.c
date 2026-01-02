@@ -26,7 +26,7 @@ string loadFile(char * filename)
     FILE * fp = fopen(filename,"rb");
     if (!fp)
     {
-        fprintf(stderr,"Error reading from file %s",filename);
+        fprintf(stderr,"Error reading from file %s\n",filename);
         return (string){0};
     }
     string data = {0};
@@ -59,4 +59,10 @@ string loadFile(char * filename)
     }
     fclose(fp);
     return data;
+}
+
+int setString(string *str,char * newstr,size_t StrSize)
+{
+    str->content = newstr;
+    str->size = StrSize;
 }
