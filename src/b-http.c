@@ -25,6 +25,9 @@
     * also im a bit worried about binary files in the future
     * which arent guaranteed to be perfectly null terminated
     * and that can cause strlen to malfunction
+    * 
+    * Chat im lowk addicted to this (last words befoer quiting coding for 6 months)
+    * 
 \*/
 
 int main(void)
@@ -93,26 +96,56 @@ int main(void)
 
         /*Preparing and sending the response*/
 
+        int status_code = 200;
 
-        size_t response_size = 512;
-        char * server_content = "Welcome home\n";
+        FILE * requested_file = fopen(full_path,"rb");
+        int resource_len = 0;
+
+        size_t resource_size = 32;
+        char * resource_content = malloc(32);
+        
+        char c; // look at this guy hes winking at me, i gotta wink bakc ;J
+        char * temp;
+        for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
+        {
+            resource_content[resource_len] = c;
+            if (resource_len + 1 >= resource_size)
+            {
+                resource_size *= 2;
+                temp = realloc(resource_content,resource_size);
+                if (!temp)
+                {
+                    perror("Memory allocation issue\n");
+                    return 1;
+                }
+                resource_content = temp;
+            }
+        }
+        fclose(requested_file);
+
+        //char * server_content = "Welcome home\n";
+
+        size_t response_size = 256 + resource_len;
         char * server_response = malloc(response_size);
 
         snprintf(server_response,
         response_size,
-        "HTTP/1.1 200 OK\r\n"
+        "HTTP/1.1 %d OK\r\n"
         "Content-Type: text/html\r\n"
         "Content-Length: %zu\r\n"
         "\r\n"
         "%s",
-        strlen(server_content),
-        server_content
+        status_code,
+        resource_len,
+        resource_content
         );
 
         send(client_fd, server_response, strlen(server_response), 0);
         close(client_fd);
 
+        free(resource_content);
         free(server_response);
+
     }
     close(server_fd);
     return 0;
