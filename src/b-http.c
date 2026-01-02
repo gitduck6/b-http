@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define PATH_LIMIT 256
+
 /*\
     * REMAKING IT COS I SUCK
     * I think i know this stuff better now and will try to use functions such as scanf and snprintf better
@@ -21,6 +23,7 @@
 
 int main(void)
 {
+    /*Creating a socket*/
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)
     {
@@ -28,6 +31,7 @@ int main(void)
         return 1;
     }
 
+    /*Binding it to a port*/
     struct sockaddr_in addr = {0};
     
     addr.sin_family = AF_INET;
@@ -40,6 +44,7 @@ int main(void)
         return 1;
     }
 
+    /*Start listening to the port*/
     if (listen(server_fd,10) < 0)
     {
         fprintf(stderr,"Listen failed.\n");
@@ -51,6 +56,7 @@ int main(void)
     char running = 1;
     while (running)
     {
+        /*Accepting the client*/
         int client_fd = accept(server_fd,NULL,NULL);
 
         if (client_fd < 0)
@@ -59,9 +65,12 @@ int main(void)
             continue;
         }
 
+        /*Parsing the request*/
         char user_req[4096];
         size_t total = 0;
         size_t received;
+
+        char * path[PATH_LIMIT];
 
         while ((received = recv(client_fd,user_req + total,sizeof(user_req) - total - 1,0)) > 0)
         {
@@ -70,6 +79,9 @@ int main(void)
             if (strstr(user_req,"\r\n\r\n")) break;
         }
 
+        sscanf(user_req,"GET %255s ",path);
+
+        /*Preparing and sending the response*/
         char * server_content = "Welcome home\n";
         char server_response[512];
 
