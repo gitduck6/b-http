@@ -5,6 +5,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include "ioheader.h"
+
+
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
 

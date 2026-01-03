@@ -1,4 +1,4 @@
-SOURCE = b-http.c
+SOURCE = b-http.c ioheader.c
 COMPILER = gcc
 TARGET = server
 
