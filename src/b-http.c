@@ -138,7 +138,6 @@ int main(void)
             status_code = 400;
         }
         
-        
         size_t response_size = 256 + resource_len;
         char * server_response = malloc(response_size);
 
