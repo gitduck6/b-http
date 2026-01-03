@@ -3,17 +3,13 @@
 // Example : myfile.png -> .png
 char * lookup_ext(char * filename)
 {
+
+    int end;
     int pos;
-    for (pos = 0;filename[pos] != '\0';pos++)
-    {
-        if (filename[pos] == '.') break;
-    }
 
-    return (filename + pos);
+    for (end = 0;filename[end] != '\0';end++);
+    for (pos = end - 1;(filename[pos] != '.') && (pos >= 0);pos--);
 
-}
+    return filename + pos + 1;
 
-int main(void)
-{
-    printf("%s",lookup_ext("TEST.com"));
 }
