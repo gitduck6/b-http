@@ -7,7 +7,6 @@
 
 #include "ioheader.h"
 
-
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
 
@@ -144,6 +143,7 @@ int main(void)
         size_t response_size = 256 + resource_len;
         char * server_response = malloc(response_size);
 
+        // Status code handling
         char * status_string = NULL;
         switch (status_code)
         {
@@ -157,16 +157,22 @@ int main(void)
             status_string = "OK";
             break;
         }
+
+        // Content-type handling
+        char * file_extention = lookup_ext(full_path);
+        char * content_type = lookup_mime(file_extention); 
+
         
         snprintf(server_response,
         response_size,
         "HTTP/1.1 %d %s\r\n"
-        "Content-Type: text/html\r\n"
+        "Content-Type: %s\r\n"
         "Content-Length: %zu\r\n"
         "\r\n"
         "%s",
         status_code,
         status_string,
+        content_type,
         resource_len,
         resource_content
         );
