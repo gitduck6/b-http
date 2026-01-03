@@ -103,12 +103,11 @@ int main(void)
 
         
         FILE * requested_file = fopen(full_path,"rb");
-        size_t resource_size = 32;
+        size_t resource_size = 64;
         int resource_len = 0;
         char * resource_content = malloc(resource_size);
         if (requested_file)
         {
-            
             
             char c; // look at this guy hes winking at me, i gotta wink bakc ;J
             char * temp;
@@ -134,7 +133,7 @@ int main(void)
         {
             // Will just use a generic 400 for every error for now
             fprintf(stderr,"File %s does not exist\n",full_path);
-            resource_content = "<h1>400: Bad request<h1>";
+            snprintf(resource_content,resource_size,"<h1>400: Bad request<h1>");
             resource_len = strlen(resource_content);
             status_code = 400;
         }
@@ -173,6 +172,8 @@ int main(void)
         send(client_fd, server_response, strlen(server_response), 0);
         close(client_fd);
 
+        // Okay so the issue is that we free memory that was statically set
+        // IF we get an error, so a simple fix would be to make the error thing dynamic too
         free(resource_content);
         free(server_response);
 
