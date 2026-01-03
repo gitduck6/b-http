@@ -8,6 +8,9 @@
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
 
+#define STATUS_OK 200
+#define BAD_REQUEST 400
+
 /*\
     * REMAKING IT COS I SUCK
     * I think i know this stuff better now and will try to use functions such as scanf and snprintf better
@@ -82,6 +85,8 @@ int main(void)
         char path[PATH_LIMIT];
         char full_path[PATH_LIMIT + sizeof(FILE_ROOT)];
 
+        int status_code;
+
         while ((received = recv(client_fd,user_req + total,sizeof(user_req) - total - 1,0)) > 0)
         {
             total += received;
@@ -96,46 +101,71 @@ int main(void)
 
         /*Preparing and sending the response*/
 
-        int status_code = 200;
-
-        FILE * requested_file = fopen(full_path,"rb");
-        int resource_len = 0;
-
-        size_t resource_size = 32;
-        char * resource_content = malloc(32);
         
-        char c; // look at this guy hes winking at me, i gotta wink bakc ;J
-        char * temp;
-        for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
+        FILE * requested_file = fopen(full_path,"rb");
+        size_t resource_size = 32;
+        int resource_len = 0;
+        char * resource_content = malloc(resource_size);
+        if (requested_file)
         {
-            resource_content[resource_len] = c;
-            if (resource_len + 1 >= resource_size)
+            
+            
+            char c; // look at this guy hes winking at me, i gotta wink bakc ;J
+            char * temp;
+            for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
             {
-                resource_size *= 2;
-                temp = realloc(resource_content,resource_size);
-                if (!temp)
+                resource_content[resource_len] = c;
+                if (resource_len + 1 >= resource_size)
                 {
-                    perror("Memory allocation issue\n");
-                    return 1;
+                    resource_size *= 2;
+                    temp = realloc(resource_content,resource_size);
+                    if (!temp)
+                    {
+                        perror("Memory allocation issue\n");
+                        return 1;
+                    }
+                    resource_content = temp;
                 }
-                resource_content = temp;
             }
+            fclose(requested_file);
+            status_code = 200;
         }
-        fclose(requested_file);
-
-        //char * server_content = "Welcome home\n";
-
+        else 
+        {
+            // Will just use a generic 400 for every error for now
+            fprintf(stderr,"File %s does not exist\n",full_path);
+            resource_content = "<h1>400: Bad request<h1>";
+            resource_len = strlen(resource_content);
+            status_code = 400;
+        }
+        
+        
         size_t response_size = 256 + resource_len;
         char * server_response = malloc(response_size);
 
+        char * status_string = NULL;
+        switch (status_code)
+        {
+        case 200:
+            status_string = "OK";
+            break;
+        case 400:
+            status_string = "Bad Request";
+            break;
+        default:
+            status_string = "OK";
+            break;
+        }
+        
         snprintf(server_response,
         response_size,
-        "HTTP/1.1 %d OK\r\n"
+        "HTTP/1.1 %d %s\r\n"
         "Content-Type: text/html\r\n"
         "Content-Length: %zu\r\n"
         "\r\n"
         "%s",
         status_code,
+        status_string,
         resource_len,
         resource_content
         );
