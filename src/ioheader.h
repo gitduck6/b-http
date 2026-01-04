@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PORT 8080
+
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
 

@@ -27,6 +27,10 @@
     * and that can cause strlen to malfunction
     * 
     * Chat im lowk addicted to this (last words befoer quiting coding for 6 months)
+    *
+    * i know nothing about multi-threading so i need to learn it
+    * ill be using posix pthreads because the server only works on unix (windows support coming soon)
+    * after making a semi-firm foundation for this program, i plan to look for contributors    
     * 
 \*/
 
@@ -45,7 +49,7 @@ int main(void)
     
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(8080);
+    addr.sin_port = htons(PORT);
 
     if (bind(server_fd, (struct sockaddr*)&addr,sizeof(addr)) < 0)
     {
@@ -60,7 +64,7 @@ int main(void)
         return 1;
     }
 
-    printf("Listening on http://localhost:8080\n");
+    printf("Listening on http://localhost:%d\n",PORT);
     
     handle_client(server_fd);
 
