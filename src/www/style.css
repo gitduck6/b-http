@@ -1,0 +1,17 @@
+.frame
+{
+    width: 60%;
+    margin: auto;
+    background-color: bisque;
+
+    border-style:groove;
+    border-width: 10px;
+
+    box-shadow: 100px;
+}
+
+body
+{
+    background-image: url(bg.png);
+    background-repeat: repeat;
+}
