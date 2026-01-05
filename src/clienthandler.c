@@ -35,7 +35,11 @@ int handle_client(int server_fd)
         printf("Request : %s\n",user_req);
 
         sscanf(user_req,"GET %255s ",path);
-        snprintf(full_path,sizeof(full_path),FILE_ROOT "%s",path);
+        snprintf(full_path,sizeof(full_path),FILE_ROOT "%s",path);// concentrate index.html into www/index.html
+        
+        // Content-type handling
+        char * file_extention = lookup_ext(full_path);
+        char * content_type = lookup_mime(file_extention); 
 
         /*Preparing and sending the response*/
 
@@ -74,6 +78,7 @@ int handle_client(int server_fd)
             // Will just use a generic 400 for every error for now
             fprintf(stderr,"File %s does not exist\n",full_path);
             snprintf(resource_content,resource_size,"<h1>400: Bad request<h1>");
+            content_type = "html";
             resource_len = strlen(resource_content);
             status_code = 400;
         }
@@ -96,9 +101,6 @@ int handle_client(int server_fd)
             break;
         }
 
-        // Content-type handling
-        char * file_extention = lookup_ext(full_path);
-        char * content_type = lookup_mime(file_extention); 
 
         
         snprintf(server_response,
