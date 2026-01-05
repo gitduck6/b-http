@@ -42,16 +42,15 @@ int handle_client(int server_fd)
         
         FILE * requested_file = fopen(full_path,"rb");
         size_t resource_size = 64;
-        int resource_len = 0;
+        size_t resource_len = 0;
         char * resource_content = malloc(resource_size);
         if (requested_file)
         {
             
-            char c; // look at this guy hes winking at me, i gotta wink bakc ;J
+            int c; // look at this guy hes winking at me, i gotta wink bakc ;J
             char * temp;
             for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
             {
-                resource_content[resource_len] = c;
                 if (resource_len + 1 >= resource_size)
                 {
                     resource_size *= 2;
@@ -59,11 +58,14 @@ int handle_client(int server_fd)
                     if (!temp)
                     {
                         perror("Memory allocation issue\n");
+                        free(resource_content);
                         return 1;
                     }
                     resource_content = temp;
                 }
+                resource_content[resource_len] = (char)c;
             }
+            resource_content[resource_len] = '\0'; // Null terminate
             fclose(requested_file);
             status_code = 200;
         }
