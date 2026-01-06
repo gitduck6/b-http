@@ -32,6 +32,9 @@
     * ill be using posix pthreads because the server only works on unix (windows support coming soon)
     * after making a semi-firm foundation for this program, i plan to look for contributors    
     * 
+    * Im cleaning everything up this time instead of adding to/fixing the terrible code
+    * 
+    * 
 \*/
 
 int main(void)

@@ -28,29 +28,30 @@ int handle_client(int server_fd)
         while ((received = recv(client_fd,user_req + total,sizeof(user_req) - total - 1,0)) > 0)
         {
             total += received;
-            user_req[total] = '\0';
             if (strstr(user_req,"\r\n\r\n")) break;
         }
+        user_req[total] = '\0';
 
-        printf("Request : %s\n",user_req);
+        printf("Request :\n %s",user_req);
 
         sscanf(user_req,"GET %255s ",path);
         snprintf(full_path,sizeof(full_path),FILE_ROOT "%s",path);// concentrate index.html into www/index.html
         
         // Content-type handling
-        char * file_extention = lookup_ext(full_path);
-        char * content_type = lookup_mime(file_extention); 
+        char * content_type = lookup_mime(lookup_ext(full_path)); 
 
         /*Preparing and sending the response*/
 
         
         FILE * requested_file = fopen(full_path,"rb");
+
         size_t resource_size = 64;
         size_t resource_len = 0;
         char * resource_content = malloc(resource_size);
-        if (requested_file)
+        
+        if (requested_file != NULL)
         {
-            
+            printf("loading %s into memory\n",full_path);
             int c; // look at this guy hes winking at me, i gotta wink bakc ;J
             char * temp;
             for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
@@ -120,8 +121,6 @@ int handle_client(int server_fd)
         send(client_fd, server_response, strlen(server_response), 0);
         close(client_fd);
 
-        // Okay so the issue is that we free memory that was statically set
-        // IF we get an error, so a simple fix would be to make the error thing dynamic too
         free(resource_content);
         free(server_response);
     }
