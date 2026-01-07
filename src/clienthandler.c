@@ -112,16 +112,18 @@ int handle_client(int server_fd)
         "HTTP/1.1 %d %s\r\n"
         "Content-Type: %s\r\n"
         "Content-Length: %zu\r\n"
-        "\r\n"
-        "%s",
+        "\r\n",
         status_code,
         status_string,
         content_type,
-        resource_len,
-        resource_content
+        resource_len
         );
 
-        send(client_fd, server_response, strlen(server_response), 0);
+        size_t header_size = strlen(server_response);
+
+        memcpy(server_response + strlen(server_response),resource_content,resource_len);
+
+        send(client_fd, server_response, header_size + resource_len, 0);
         close(client_fd);
 
         free(resource_content);
