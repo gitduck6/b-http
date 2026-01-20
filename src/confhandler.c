@@ -7,7 +7,7 @@ int config_init(Conf * config_pointer)
 
     if (conf_buffer == NULL) {
         perror("Memory allocation issue");
-        return NULL;
+        return 1;
     }
 
     FILE * fp = fopen(CONF_FILE,"rb");
@@ -20,7 +20,8 @@ int config_init(Conf * config_pointer)
     }
 
     int c;
-    for (int i = 0;(c = fgetc(fp)) != EOF;i++)
+    int i;
+    for (i = 0;(c = fgetc(fp)) != EOF;i++)
     {
         if ((i + 1) >= buffer_size)
         {
@@ -37,6 +38,9 @@ int config_init(Conf * config_pointer)
         }
         conf_buffer[i] = (char)c;
     }
+    conf_buffer[i] = '\0';
+
+    fclose(fp);
 
     char *portPtr = strstr(conf_buffer,"PORT");
 
@@ -49,10 +53,23 @@ int config_init(Conf * config_pointer)
     char *webrootPtr = strstr(conf_buffer,"WEBROOT");
 
     if (webrootPtr)
-    sscanf(webrootPtr,"WEBROOT=%s;",&(config_pointer->webroot)); 
+    sscanf(webrootPtr,"WEBROOT=%s255;",(config_pointer->webroot)); 
     else
     config_pointer->webroot = DEFAULT_WEBROOT;
 
+    free(conf_buffer);
+
     return 0;
+
+}
+
+int main()
+{
+    Conf data;
+    config_init(&data);
+
+    printf("Config port is %d and webroot is %s",data.port,data.webroot);
+    return 0;
+
 
 }

@@ -16,3 +16,5 @@ typedef struct conf
     char * webroot;
 }
 Conf;
+
+int config_init(Conf * config_pointer);
