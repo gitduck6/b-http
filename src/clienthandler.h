@@ -14,6 +14,7 @@
 
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
+#define DEFAULT_ROUTE "index.html"
 
 #define STATUS_OK 200
 #define BAD_REQUEST 400
