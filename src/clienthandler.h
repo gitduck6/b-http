@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 
 #include "ioheader.h"
+#include "confhandler.h"
+
 
 #define PORT 8080
 

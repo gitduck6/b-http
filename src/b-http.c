@@ -7,6 +7,8 @@
 
 #include "ioheader.h"
 #include "clienthandler.h"
+#include "confhandler.h"
+
 
 /*\
     * REMAKING IT COS I SUCK

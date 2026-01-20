@@ -62,14 +62,3 @@ int config_init(Conf * config_pointer)
     return 0;
 
 }
-
-int main()
-{
-    Conf data;
-    config_init(&data);
-
-    printf("Config port is %d and webroot is %s",data.port,data.webroot);
-    return 0;
-
-
-}
