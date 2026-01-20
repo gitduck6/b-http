@@ -1,4 +1,5 @@
 #include "clienthandler.h"
+#include "ioheader.h"
 
 
 int handle_client(int server_fd)
@@ -42,17 +43,14 @@ int handle_client(int server_fd)
 
         /*Preparing and sending the response*/
 
-        struct stat st;
-
-        stat(full_path, &st);
-
         FILE * requested_file = fopen(full_path,"rb");
 
         size_t resource_size = 64;
         size_t resource_len = 0;
         char * resource_content = malloc(resource_size);
         
-        if ((requested_file != NULL) && (S_ISREG(st.st_mode)))
+        
+        if ((requested_file != NULL) && (filetype(full_path) == '-'))
         {
             printf("loading %s into memory\n",full_path);
             int c; // look at this guy hes winking at me, i gotta wink bakc ;J
