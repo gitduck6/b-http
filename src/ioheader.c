@@ -33,3 +33,25 @@ char * lookup_mime(char * file_extention)
     else return "text/plain";
 
 }
+
+char filetype(const char * filename)
+{
+    struct stat st;
+    if (stat(filename, &st) != 0)
+    {
+        return '?';
+        //return ? if it does not exist or an error
+    }
+
+    if (S_ISDIR(st.st_mode))
+    {
+        return 'd';
+        // d if IS dir,
+    }
+    if (S_ISREG(st.st_mode))
+    {
+        
+    }
+    return '-';
+    // - if its something else idk
+}
