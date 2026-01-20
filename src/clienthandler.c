@@ -1,4 +1,5 @@
 #include "clienthandler.h"
+#include "ioheader.h"
 
 
 int handle_client(int server_fd)
@@ -20,10 +21,8 @@ int handle_client(int server_fd)
         size_t total = 0;
         size_t received;
 
-        size_t path_len = PATH_LIMIT + sizeof(FILE_ROOT);
-        char *full_path = malloc(path_len);
-        snprintf(full_path,path_len,"%s",FILE_ROOT);// add the www/
-
+        char path[PATH_LIMIT];
+        char full_path[PATH_LIMIT + sizeof(FILE_ROOT)];
 
         int status_code;
 
@@ -36,29 +35,22 @@ int handle_client(int server_fd)
 
         printf("Request :\n %s",user_req);
 
-        sscanf(user_req,"GET %255s ",full_path + strlen(FILE_ROOT));
+        sscanf(user_req,"GET %255s ",path);
+        snprintf(full_path,sizeof(full_path),FILE_ROOT "%s",path);// concentrate index.html into www/index.html
         
         // Content-type handling
         char * content_type = lookup_mime(lookup_ext(full_path)); 
 
         /*Preparing and sending the response*/
 
-        struct stat st;
-
-        stat(full_path, &st);
-
         FILE * requested_file = fopen(full_path,"rb");
 
         size_t resource_size = 64;
         size_t resource_len = 0;
         char * resource_content = malloc(resource_size);
-
-        if (S_ISDIR(st.st_mode))
-        {
-            strcpy(full_path + strlen(full_path),"" DEFAULT_ROUTE);
-        }
         
-        if ((requested_file != NULL) && (S_ISREG(st.st_mode)))
+        
+        if ((requested_file != NULL) && (filetype(full_path) == '-'))
         {
             printf("loading %s into memory\n",full_path);
             int c; // look at this guy hes winking at me, i gotta wink bakc ;J

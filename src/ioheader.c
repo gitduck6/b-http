@@ -50,8 +50,28 @@ char filetype(const char * filename)
     }
     if (S_ISREG(st.st_mode))
     {
-        
+        return '-';
+        // - if its something else idk
     }
-    return '-';
-    // - if its something else idk
+    return '?';
+
+}
+
+int AddString(Content * data,char * toBeAdded)
+{
+    if (data->buffer_size <= (data->lenght + strlen(toBeAdded)))
+    {
+        data->buffer_size += strlen(toBeAdded) * 2;
+        char * temp = realloc(data->data,data->buffer_size);
+        if (temp == NULL)
+        {
+            perror("Realloc error\n");
+            return 0;
+        }
+        data->data = temp;
+    }
+    strncpy( data->data + data->lenght, toBeAdded, strlen(toBeAdded) );
+    data->data[ data->lenght + strlen(toBeAdded) ] = '\0';
+    data->lenght += strlen(toBeAdded);
+    // do not question my code pls, i cant even read it myself
 }

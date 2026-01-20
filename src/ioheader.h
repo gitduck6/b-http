@@ -7,4 +7,14 @@
 
 char * lookup_ext(char * filename);
 char * lookup_mime(char * file_extention);
-char filetype(char * filename);
+char filetype(const char * filename);
+
+typedef struct content
+{
+    size_t lenght;  
+    size_t buffer_size;
+    char * data;
+}
+Content;
+
+int AddString(Content * data,char * toBeAdded);
