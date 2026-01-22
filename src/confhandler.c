@@ -15,7 +15,7 @@ int config_init(Conf * config_pointer)
     {
         // IF we couldnt open the file, we put a basic config file in its place
         config_pointer->port = DEFAULT_PORT;
-        config_pointer->webroot = DEFAULT_WEBROOT;
+        //config_pointer->webroot = DEFAULT_WEBROOT;
         return 1;
     }
 
@@ -52,13 +52,13 @@ int config_init(Conf * config_pointer)
 
     char *webrootPtr = strstr(conf_buffer,"WEBROOT");
 
+    /*
     if (webrootPtr)
     {
-        config_pointer = malloc(256);
         sscanf(webrootPtr,"WEBROOT=%s255;",(config_pointer->webroot)); 
     }
     else config_pointer->webroot = DEFAULT_WEBROOT;
-
+    */
     free(conf_buffer);
 
     return 0;

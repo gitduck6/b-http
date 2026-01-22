@@ -13,7 +13,7 @@
 typedef struct conf
 {
     int port;
-    char * webroot;
+    char webroot[256];
 }
 Conf;
 

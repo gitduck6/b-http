@@ -41,6 +41,11 @@
 
 int main(void)
 {
+    /*Setting up the parameters*/
+
+    Conf parameters = {0};
+    config_init(&parameters);
+
     /*Creating a socket*/
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)
@@ -54,7 +59,7 @@ int main(void)
     
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(PORT);
+    addr.sin_port = htons(parameters.port);
 
     if (bind(server_fd, (struct sockaddr*)&addr,sizeof(addr)) < 0)
     {
@@ -69,7 +74,7 @@ int main(void)
         return 1;
     }
 
-    printf("Listening on http://localhost:%d\n",PORT);
+    printf("Listening on http://localhost:%d\n",parameters.port);
     
     handle_client(server_fd);
 
