@@ -44,18 +44,20 @@ int config_init(Conf * config_pointer)
 
     char *portPtr = strstr(conf_buffer,"PORT");
 
-    if (portPtr)
+    if (portPtr) 
+    {
     sscanf(portPtr,"PORT=%d;",&(config_pointer->port));
-    else 
-    config_pointer->port = DEFAULT_PORT;
-
+    }
+    else config_pointer->port = DEFAULT_PORT;
 
     char *webrootPtr = strstr(conf_buffer,"WEBROOT");
 
     if (webrootPtr)
-    sscanf(webrootPtr,"WEBROOT=%s255;",(config_pointer->webroot)); 
-    else
-    config_pointer->webroot = DEFAULT_WEBROOT;
+    {
+        config_pointer = malloc(256);
+        sscanf(webrootPtr,"WEBROOT=%s255;",(config_pointer->webroot)); 
+    }
+    else config_pointer->webroot = DEFAULT_WEBROOT;
 
     free(conf_buffer);
 
