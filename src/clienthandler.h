@@ -18,4 +18,6 @@
 #define STATUS_OK 200
 #define BAD_REQUEST 400
 
+extern Conf parameters;
+
 int handle_client(int server_fd);

@@ -16,6 +16,4 @@ typedef struct conf
 }
 Conf;
 
-extern Conf parameters;
-
 int config_init(Conf * config_pointer);

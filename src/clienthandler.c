@@ -22,7 +22,7 @@ int handle_client(int server_fd)
         size_t received;
 
         char path[PATH_LIMIT];
-        char full_path[PATH_LIMIT + sizeof(FILE_ROOT)];
+        char full_path[PATH_LIMIT + strlen(parameters.webroot)];
 
         int status_code;
 
@@ -36,7 +36,9 @@ int handle_client(int server_fd)
         printf("Request :\n %s",user_req);
 
         sscanf(user_req,"GET %255s ",path);
-        snprintf(full_path,sizeof(full_path),FILE_ROOT "%s",path);// concentrate index.html into www/index.html
+        snprintf(full_path,sizeof(full_path),parameters.webroot);
+        snprintf(full_path + strlen(parameters.webroot),sizeof(full_path),"%s",path);
+        // concentrate index.html into www/index.html
         
         // Content-type handling
         char * content_type = lookup_mime(lookup_ext(full_path)); 
