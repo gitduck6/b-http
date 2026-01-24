@@ -9,12 +9,13 @@
 #define DEFAULT_PORT 8080
 #define DEFAULT_WEBROOT "www"
 
-
 typedef struct conf
 {
     int port;
     char webroot[256];
 }
 Conf;
+
+extern Conf parameters;
 
 int config_init(Conf * config_pointer);

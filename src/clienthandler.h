@@ -11,9 +11,6 @@
 #include "ioheader.h"
 #include "confhandler.h"
 
-
-#define PORT 8080
-
 #define PATH_LIMIT 256
 #define FILE_ROOT "www"
 #define DEFAULT_ROUTE "index.html"

@@ -39,11 +39,11 @@
     * 
 \*/
 
+Conf parameters = {0};
+
 int main(void)
 {
     /*Setting up the parameters*/
-
-    Conf parameters = {0};
     config_init(&parameters);
 
     /*Creating a socket*/
