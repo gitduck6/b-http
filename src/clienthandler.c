@@ -40,10 +40,18 @@ int handle_client(int server_fd)
         snprintf(full_path + strlen(parameters.webroot),sizeof(full_path),"%s",path);
         // concentrate index.html into www/index.html
         
+        if (filetype(full_path) == 'd')
+        {
+            int len = strlen(full_path);
+            snprintf(full_path + len, sizeof(full_path) - len, "%s", DEFAULT_ROUTE);
+            //If its a folder it turns into path/index.html
+        }
+        
         // Content-type handling
         char * content_type = lookup_mime(lookup_ext(full_path)); 
 
         /*Preparing and sending the response*/
+
 
         FILE * requested_file = fopen(full_path,"rb");
 
@@ -51,8 +59,8 @@ int handle_client(int server_fd)
         size_t resource_len = 0;
         char * resource_content = malloc(resource_size);
         
-        
-        if ((requested_file != NULL) && (filetype(full_path) == '-'))
+
+        if (requested_file != NULL)
         {
             printf("loading %s into memory\n",full_path);
             int c; // look at this guy hes winking at me, i gotta wink bakc ;J
