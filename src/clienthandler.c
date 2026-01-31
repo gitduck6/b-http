@@ -43,7 +43,7 @@ int handle_client(int server_fd)
         if (filetype(full_path) == 'd')
         {
             int len = strlen(full_path);
-            snprintf(full_path + len, sizeof(full_path) - len, "%s", DEFAULT_ROUTE);
+            snprintf(full_path + len, sizeof(full_path) - len, "%s","/" DEFAULT_ROUTE);
             //If its a folder it turns into path/index.html
         }
         
@@ -51,7 +51,6 @@ int handle_client(int server_fd)
         char * content_type = lookup_mime(lookup_ext(full_path)); 
 
         /*Preparing and sending the response*/
-
 
         FILE * requested_file = fopen(full_path,"rb");
 
