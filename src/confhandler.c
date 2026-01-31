@@ -14,8 +14,10 @@ int config_init(Conf * config_pointer)
     if (fp == NULL)
     {
         // IF we couldnt open the file, we put a basic config file in its place
+        free(conf_buffer);
         config_pointer->port = DEFAULT_PORT;
-        //config_pointer->webroot = DEFAULT_WEBROOT;
+
+        strcpy(config_pointer->webroot,DEFAULT_WEBROOT);
         return 1;
     }
 
@@ -29,7 +31,7 @@ int config_init(Conf * config_pointer)
             char * temp = realloc(conf_buffer,buffer_size);
             if (temp == NULL)
             {
-                perror("Realloc error\n");
+                perror("Realloc error");
                 free(conf_buffer);
                 return -1;
             }
@@ -46,19 +48,19 @@ int config_init(Conf * config_pointer)
 
     if (portPtr) 
     {
-    sscanf(portPtr,"PORT=%d;",&(config_pointer->port));
+    sscanf(portPtr,"PORT=%d",&(config_pointer->port));
     }
     else config_pointer->port = DEFAULT_PORT;
 
     char *webrootPtr = strstr(conf_buffer,"WEBROOT");
 
-    /*
+    
     if (webrootPtr)
     {
-        sscanf(webrootPtr,"WEBROOT=%s255;",(config_pointer->webroot)); 
+        sscanf(webrootPtr,"WEBROOT=%s",(config_pointer->webroot)); 
     }
-    else config_pointer->webroot = DEFAULT_WEBROOT;
-    */
+    else strcpy(config_pointer->webroot,DEFAULT_WEBROOT);
+    
     free(conf_buffer);
 
     return 0;
