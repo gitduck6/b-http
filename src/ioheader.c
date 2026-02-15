@@ -16,7 +16,6 @@ char * lookup_ext(char * filename)
 
 char * lookup_mime(char * file_extention)
 {
-    char * content_type;
 
     // Text type
     if (!(strcmp(file_extention,"html"))) return "text/html";
@@ -80,4 +79,28 @@ int AddString(Content * data,char * toBeAdded)
     data->data[ data->lenght + strlen(toBeAdded) ] = '\0';
     data->lenght += strlen(toBeAdded);
     // do not question my code pls, i cant even read it myself
+}
+
+int loadfile(FILE * requested_file, Content * resource)
+{
+    int c; // look at this guy hes winking at me, i gotta wink bakc ;J
+    char * temp;
+    for (resource->lenght = 0;(c = fgetc(requested_file)) != EOF;resource->lenght++)
+    {
+        if (resource->lenght + 1 >= resource->buffer_size)
+        {
+            resource->buffer_size *= 2;
+            temp = realloc(resource->data,resource->buffer_size);
+            if (!temp)
+            {
+                perror("Memory allocation issue\n");
+                free(resource->data);
+                return 1;
+            }
+            resource->data = temp;
+        }
+        resource->data[resource->lenght] = (char)c;
+    }
+    resource->data[resource->lenght] = '\0'; // Null terminate
+    fclose(requested_file);
 }

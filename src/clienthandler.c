@@ -54,47 +54,29 @@ int handle_client(int server_fd)
 
         FILE * requested_file = fopen(full_path,"rb");
 
-        size_t resource_size = 64;
-        size_t resource_len = 0;
-        char * resource_content = malloc(resource_size);
-        
+        Content resource;
 
+        resource.buffer_size = 64;
+        resource.lenght = 0;
+        resource.data = malloc(resource.buffer_size);
+        
         if (requested_file != NULL)
         {
             printf("loading %s into memory\n",full_path);
-            int c; // look at this guy hes winking at me, i gotta wink bakc ;J
-            char * temp;
-            for (resource_len = 0;(c = fgetc(requested_file)) != EOF;resource_len++)
-            {
-                if (resource_len + 1 >= resource_size)
-                {
-                    resource_size *= 2;
-                    temp = realloc(resource_content,resource_size);
-                    if (!temp)
-                    {
-                        perror("Memory allocation issue\n");
-                        free(resource_content);
-                        return 1;
-                    }
-                    resource_content = temp;
-                }
-                resource_content[resource_len] = (char)c;
-            }
-            resource_content[resource_len] = '\0'; // Null terminate
-            fclose(requested_file);
+            loadfile(requested_file,&resource);
             status_code = 200;
         }
         else 
         {
             // Will just use a generic 400 for every error for now
             fprintf(stderr,"File %s does not exist\n",full_path);
-            snprintf(resource_content,resource_size,"<h1>400: Bad request<h1>");
-            content_type = "html";
-            resource_len = strlen(resource_content);
+            snprintf(resource.data,resource.buffer_size,"<h1>400: Bad request<h1>");
+            content_type = "text/html";
+            resource.lenght = strlen(resource.data);
             status_code = 400;
         }
         
-        size_t response_size = 256 + resource_len;
+        size_t response_size = 256 + resource.lenght;
         char * server_response = malloc(response_size);
 
         // Status code handling
@@ -123,17 +105,17 @@ int handle_client(int server_fd)
         status_code,
         status_string,
         content_type,
-        resource_len
+        resource.lenght
         );
 
         size_t header_size = strlen(server_response);
 
-        memcpy(server_response + strlen(server_response),resource_content,resource_len);
+        memcpy(server_response + strlen(server_response),resource.data,resource.lenght);
 
-        send(client_fd, server_response, header_size + resource_len, 0);
+        send(client_fd, server_response, header_size + resource.lenght, 0);
         close(client_fd);
 
-        free(resource_content);
+        free(resource.data);
         free(server_response);
     }
 }

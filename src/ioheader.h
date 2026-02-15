@@ -18,3 +18,4 @@ typedef struct content
 Content;
 
 int AddString(Content * data,char * toBeAdded);
+int loadfile(FILE * requested_file, Content * resource);
