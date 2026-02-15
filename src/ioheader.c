@@ -29,6 +29,12 @@ char * lookup_mime(char * file_extention)
     else if (!(strcmp(file_extention,"jpeg"))) return "image/jpeg";
     else if (!(strcmp(file_extention,"jpg"))) return "image/jpeg";
     else if (!(strcmp(file_extention,"gif"))) return "image/gif";
+    else if (!(strcmp(file_extention,"mp3"))) return "audio/mpeg";
+    else if (!(strcmp(file_extention,"mp4"))) return "video/mp4";
+
+    //Scripts
+    else if (!(strcmp(file_extention,"php"))) return "script/php";
+    else if (!(strcmp(file_extention,"py"))) return "script/python";
 
     else return "text/plain";
 
