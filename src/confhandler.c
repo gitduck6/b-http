@@ -18,7 +18,7 @@ int config_init(Conf * config_pointer)
         config_pointer->port = DEFAULT_PORT;
 
         strcpy(config_pointer->webroot,DEFAULT_WEBROOT);
-        return 1;
+        return 0; // Return 0 because it's a non fatal error
     }
 
     int c;
