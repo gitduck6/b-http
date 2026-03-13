@@ -19,16 +19,16 @@ int handle_client(int server_fd)
         /*Parsing the request*/
         char user_req[4096];
         size_t total = 0;
-        size_t received;
+        ssize_t received;
 
         char path[PATH_LIMIT];
         char full_path[PATH_LIMIT + strlen(parameters.webroot)];
 
         int status_code;
 
-        while ((received = recv(client_fd,user_req + total,sizeof(user_req) - total - 1,0)) > 0)
+        while ((received = recv(client_fd, user_req + total, sizeof(user_req) - total - 1, 0)) > 0)
         {
-            total += received;
+            total += (size_t)received;
             if (strstr(user_req,"\r\n\r\n")) break;
         }
         user_req[total] = '\0';
