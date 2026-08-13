@@ -64,6 +64,8 @@ int main(void)
     if (bind(server_fd, (struct sockaddr*)&addr,sizeof(addr)) < 0)
     {
         fprintf(stderr,"Could not bind port.\n");
+       ///Modified
+        close(server_fd);
         return 1;
     }
 
@@ -71,13 +73,11 @@ int main(void)
     if (listen(server_fd,10) < 0)
     {
         fprintf(stderr,"Listen failed.\n");
+       close(server_fd);
         return 1;
     }
-
     printf("Listening on http://localhost:%d\n",parameters.port);
-    
     handle_client(server_fd);
-
     close(server_fd);
     return 0;
 
